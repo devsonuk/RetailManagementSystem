@@ -9,7 +9,7 @@ namespace RMSDesktopUI.ViewModels
     {
         private string _userName;
         private string _password;
-        private IAPIHelper _apiHelper;
+        private readonly IAPIHelper _apiHelper;
 
         public LoginViewModel(IAPIHelper apiHelper)
         {
@@ -42,24 +42,37 @@ namespace RMSDesktopUI.ViewModels
 
         public bool CanLogIn => (UserName?.Length > 0 && Password?.Length > 0);
 
-        //public bool CanLogIn
-        //{
-        //    get
-        //    {
-        //        return (UserName?.Length > 0 && Password?.Length > 0);
-        //    }
-        //}
+
+        public bool IsErrorVisible => (ErrorMessage?.Length > 0);
+
+        private string _errorMessage;
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set
+            {
+                _errorMessage = value;
+                NotifyOfPropertyChange(() => IsErrorVisible);
+                NotifyOfPropertyChange(() => ErrorMessage);
+
+            }
+        }
+
+
 
         public async Task LogIn()
         {
             try
             {
+                ErrorMessage = "";
                 var user = await _apiHelper.Authenticate(UserName, Password);
+
             }
             catch (Exception ex)
             {
 
-                Console.WriteLine(ex.Message);
+                ErrorMessage = $"Invalid UserId or Password({ex.Message})";
             }
 
         }

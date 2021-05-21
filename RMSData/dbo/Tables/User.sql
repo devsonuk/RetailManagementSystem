@@ -4,6 +4,5 @@
     [FirstName] NVARCHAR(50) NOT NULL, 
     [LastName] NVARCHAR(50) NOT NULL, 
     [EmailAddress] NCHAR(256) NOT NULL, 
-    [CreateDate] DATETIME2 NOT NULL DEFAULT getUTCDate(),
-
+    [CreateDate] DATETIME2 NOT NULL DEFAULT getUTCDate()
 )
