@@ -1,5 +1,5 @@
 ﻿using Caliburn.Micro;
-using RMSDesktopUI.Helpers;
+using RMSDesktopUILibrary.Api;
 using System;
 using System.Threading.Tasks;
 
@@ -9,9 +9,9 @@ namespace RMSDesktopUI.ViewModels
     {
         private string _userName;
         private string _password;
-        private readonly IAPIHelper _apiHelper;
+        private readonly IApiHelper _apiHelper;
 
-        public LoginViewModel(IAPIHelper apiHelper)
+        public LoginViewModel(IApiHelper apiHelper)
         {
             _apiHelper = apiHelper;
         }
@@ -67,6 +67,10 @@ namespace RMSDesktopUI.ViewModels
             {
                 ErrorMessage = "";
                 var user = await _apiHelper.Authenticate(UserName, Password);
+
+                // Capture more information about the user
+                await _apiHelper.GetLoggedInUserInfo(user.Access_Token);
+
 
             }
             catch (Exception ex)

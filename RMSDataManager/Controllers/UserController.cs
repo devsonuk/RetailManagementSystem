@@ -11,6 +11,7 @@ namespace RMSDataManager.Controllers
     {
 
         // GET api/<controller>
+        [HttpGet]
         public UserModel Get()
         {
             var userId = RequestContext.Principal.Identity.GetUserId();
