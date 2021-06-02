@@ -33,9 +33,9 @@
         <!--Column 0 -->
 
 
-        <TextBox Grid.Row="1" Grid.Column="0" Text="Items" HorizontalAlignment="Right" Width="150"/>
+        <TextBox Grid.Row="1" Grid.Column="0" Text="Items" HorizontalAlignment="Right" Width="250"/>
         <ListBox x:Name="Products" Grid.Row="2" Grid.Column="0" 
-                 MinHeight="200" MinWidth="150"/>
+                 MinHeight="250" MinWidth="250"/>
 
         <!--Column 1-->
         <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1" 
@@ -55,7 +55,7 @@
         <TextBox Grid.Row="1" Grid.Column="2" Text="Cart"/>
 
         <ListBox x:Name="Cart" Grid.Row="2" Grid.Column="2"
-                 MinHeight="200" MinWidth="150"/>
+                 MinHeight="250" MinWidth="250"/>
 
         <!--<StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal">
             <TextBlock  Text="SubTotal: " />
