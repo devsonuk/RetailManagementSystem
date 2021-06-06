@@ -2,6 +2,7 @@
 using RMSDesktopUI.Helpers;
 using RMSDesktopUI.ViewModels;
 using RMSDesktopUILibrary.Api;
+using RMSDesktopUILibrary.Helpers;
 using RMSDesktopUILibrary.Models;
 using System;
 using System.Collections.Generic;
@@ -25,12 +26,14 @@ namespace RMSDesktopUI
 
         protected override void Configure()
         {
-            _container.Instance(_container);
+            _container.Instance(_container)
+                .PerRequest<IProductEndPoint, ProductEndPoint>();
 
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILoggedInUserModel, LoggedInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IApiHelper, ApiHelper>();
 
             GetType().Assembly.GetTypes()

@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMSDesktopUI", "RMSDesktopU
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMSDataManager.Library", "RMSDataManager.Library\RMSDataManager.Library.csproj", "{85823DA7-0448-4755-B0B9-3CF7FC0D6637}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMSDesktopUILibrary", "RMSDesktopUILibrary\RMSDesktopUILibrary.csproj", "{45484CAC-DFE2-420B-A30A-F3D8C63AB125}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RMSDesktopUI.Library", "RMSDesktopUILibrary\RMSDesktopUI.Library.csproj", "{45484CAC-DFE2-420B-A30A-F3D8C63AB125}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

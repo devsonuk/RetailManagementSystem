@@ -140,9 +140,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RMSDesktopUILibrary\RMSDesktopUILibrary.csproj">
+    <ProjectReference Include="..\RMSDesktopUILibrary\RMSDesktopUI.Library.csproj">
       <Project>{45484cac-dfe2-420b-a30a-f3d8c63ab125}</Project>
-      <Name>RMSDesktopUILibrary</Name>
+      <Name>RMSDesktopUI.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

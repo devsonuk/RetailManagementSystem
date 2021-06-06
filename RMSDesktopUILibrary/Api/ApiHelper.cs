@@ -31,6 +31,12 @@ namespace RMSDesktopUILibrary.Api
             _apiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+
+        public HttpClient ApiClient
+        {
+            get => _apiClient;
+        }
+
         public async Task<AuthenticatedUser> Authenticate(string username, string password)
         {
             var data = new FormUrlEncodedContent(new[]

@@ -1,14 +1,40 @@
 ﻿using Caliburn.Micro;
+using RMSDesktopUILibrary.Api;
+using RMSDesktopUILibrary.Helpers;
+using RMSDesktopUILibrary.Models;
 using System.ComponentModel;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace RMSDesktopUI.ViewModels
 {
     public class SalesViewModel : Screen
     {
+        private IProductEndPoint _productEndPoint;
+        private readonly IConfigHelper _configHelper;
 
-        private BindingList<string> _products;
+        public SalesViewModel(IProductEndPoint productEndPoint, IConfigHelper configHelper)
+        {
+            _productEndPoint = productEndPoint;
+            _configHelper = configHelper;
+        }
 
-        public BindingList<string> Products
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+
+        }
+
+        private async Task LoadProducts()
+        {
+            var productList = await _productEndPoint.GetAll();
+            Products = new BindingList<ProductModel>(productList);
+        }
+
+        private BindingList<ProductModel> _products;
+
+        public BindingList<ProductModel> Products
         {
             get => _products;
             set
@@ -18,9 +44,25 @@ namespace RMSDesktopUI.ViewModels
             }
         }
 
-        private BindingList<string> _cart;
 
-        public BindingList<string> Cart
+        private ProductModel _selectedProduct;
+
+        public ProductModel SelectedProduct
+        {
+            get { return _selectedProduct; }
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+
+
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+
+        public BindingList<CartItemModel> Cart
         {
             get => _cart;
             set
@@ -32,7 +74,7 @@ namespace RMSDesktopUI.ViewModels
         }
 
 
-        private int _itemQuantity;
+        private int _itemQuantity = 1;
 
         public int ItemQuantity
         {
@@ -41,16 +83,27 @@ namespace RMSDesktopUI.ViewModels
             {
                 _itemQuantity = value;
                 NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
         }
 
+        private double _subTotal;
+        private double _tax;
+        private double _total;
 
         public string SubTotal
         {
             get
             {
-                // TODO -- Replace with calculation
-                return "$0.00";
+                double subTotal = 0;
+
+                foreach (var item in Cart)
+                {
+                    subTotal += (item.Product.RetailPrice * item.QuantityInCart);
+                }
+
+                _subTotal = subTotal;
+                return subTotal.ToString("C");
             }
         }
 
@@ -58,8 +111,19 @@ namespace RMSDesktopUI.ViewModels
         {
             get
             {
-                // TODO -- Replace with calculation
-                return "$0.00";
+                double taxAmount = 0;
+                var taxRate = _configHelper.GetTaxRate();
+
+                foreach (var item in Cart)
+                {
+                    if (item.Product.IsTaxable)
+                    {
+                        taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate) / 100;
+
+                    }
+                }
+                _tax = taxAmount;
+                return taxAmount.ToString("C");
             }
         }
 
@@ -67,8 +131,9 @@ namespace RMSDesktopUI.ViewModels
         {
             get
             {
-                // TODO -- Replace with calculation
-                return "$0.00";
+                var total = _subTotal + _tax;
+                _total = total;
+                return total.ToString("C");
             }
         }
 
@@ -77,17 +142,45 @@ namespace RMSDesktopUI.ViewModels
         {
             get
             {
-                var output = false;
 
                 // Make sure something is selected
                 // Make Sure there is an item quantity
+                if (ItemQuantity > 0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    return true;
+                }
 
-                return output;
+                return false;
             }
         }
 
         public void AddToCart()
         {
+
+            var existingItem = Cart.FirstOrDefault(c => c.Product == SelectedProduct);
+
+            if (existingItem != null)
+            {
+                existingItem.QuantityInCart += ItemQuantity;
+                Cart.Remove(existingItem);
+                Cart.Add(existingItem);
+            }
+            else
+            {
+                var item = new CartItemModel
+                {
+                    Product = SelectedProduct,
+                    QuantityInCart = ItemQuantity
+                };
+                Cart.Add(item);
+            }
+            SelectedProduct.QuantityInStock -= ItemQuantity;
+            ItemQuantity = 1;
+            NotifyOfPropertyChange(() => Cart);
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+
 
         }
 
@@ -106,6 +199,10 @@ namespace RMSDesktopUI.ViewModels
         public void RemoveFromCart()
         {
 
+
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
         }
 
         public bool CanCheckOut
